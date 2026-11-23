@@ -227,3 +227,20 @@
 		<script async="async" defer="defer" type="text/javascript" src="index.js"></script>
 	</body>
 </html>
+<script>
+(function() {
+  const unlockAudio = () => {
+    if (window.SDL2 && SDL2.audioContext && SDL2.audioContext.state === 'suspended') {
+      SDL2.audioContext.resume();
+    }
+    Object.values(window).forEach(v => {
+      if (v && typeof v === 'object' && v.audioContext && v.audioContext.state === 'suspended') {
+        v.audioContext.resume();
+      }
+    });
+  };
+  ['click', 'keydown', 'touchstart'].forEach(evt =>
+    document.addEventListener(evt, unlockAudio, { passive: true })
+  );
+})();
+</script>
