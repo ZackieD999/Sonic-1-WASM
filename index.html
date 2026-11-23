@@ -3,6 +3,27 @@
 <!--suppress HtmlFormInputWithoutLabel, JSDeprecatedSymbols -->
 <html lang="en-us">
 	<head>
+		<script>
+(function() {
+  const NativeAC = window.AudioContext || window.webkitAudioContext;
+  if (!NativeAC) return;
+  const contexts = [];
+  window.AudioContext = window.webkitAudioContext = function(...args) {
+    const ctx = new NativeAC(...args);
+    contexts.push(ctx);
+    return ctx;
+  };
+  const resumeAll = () => {
+    contexts.forEach(ctx => {
+      if (ctx.state === 'suspended') ctx.resume();
+    });
+  };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+    window.addEventListener(ev, resumeAll, { capture: true, passive: true })
+  );
+})();
+</script>
+
 		<meta charset="utf-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
